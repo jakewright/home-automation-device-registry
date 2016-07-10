@@ -4,14 +4,14 @@ services:
 
 stages:
   - build
-  
+
 variables:
   IMAGE: registry.gitlab.com/jakewright/home-automation-device-registry
 
 before_script:
   - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
 
-build_image:
+build:
   script:
     - docker build --pull -t $IMAGE .
     - docker push $IMAGE
