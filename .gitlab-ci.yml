@@ -1,3 +1,10 @@
+image: docker:latest
+services:
+  - docker:dind
+
+stages:
+  - build
+  
 variables:
   IMAGE: registry.gitlab.com/jakewright/home-automation-device-registry
 
