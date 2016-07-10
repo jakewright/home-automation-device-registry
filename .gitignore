@@ -1,0 +1,16 @@
+# Jetbrains files
+.idea
+
+# OS X files
+.DS_STORE
+
+# Cache files
+__pycache__
+*.pyc
+
+# User specific files
+instance/
+
+# Python files
+*.pyo
+env

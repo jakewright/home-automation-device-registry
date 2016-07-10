@@ -1,0 +1,13 @@
+version: '2'
+
+services:
+  python:
+    build: .
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "80:80"
+    environment:
+      APP_CONFIG_FILE: /usr/src/app/config/development.py
+    working_dir: /usr/src/app
+    command: bash -c "python run.py"
