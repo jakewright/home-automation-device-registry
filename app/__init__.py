@@ -34,3 +34,15 @@ class Devices(Resource):
         ]}
 
 api.add_resource(Devices, '/devices')
+
+
+class Device(Resource):
+    def get(self, identifier: str):
+        return {
+            "identifier": identifier,
+            "deviceType": 'plug',
+            "name": "Dell U2410",
+            "controllerGateway": "192.168.0.52"
+        }
+
+api.add_resource(Device, '/device/<string:identifier>')
