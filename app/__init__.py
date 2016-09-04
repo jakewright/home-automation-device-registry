@@ -50,14 +50,7 @@ class DeviceList(Resource):
         devices = []
 
         for key in keys:
-            device = {
-                'identifier': key,
-                'name': shelf[key]['name'],
-                'deviceType': shelf[key]['deviceType'],
-                'controllerGateway': shelf[key]['controllerGateway']
-            }
-
-            devices.append(device)
+            devices.append(shelf[key])
 
         return {'message': message, 'value': devices}, code
 
@@ -65,19 +58,21 @@ class DeviceList(Resource):
         shelf = shelve.open(app.config['DATABASE'])
 
         parser = reqparse.RequestParser()
+
+        # Common to all devices
         parser.add_argument('identifier')
         parser.add_argument('name')
         parser.add_argument('device-type')
         parser.add_argument('controller-gateway')
 
-        args = parser.parse_args()
+        # Switch specific
+        parser.add_argument('state')
 
-        data = {
-            'identifier': args['identifier'],
-            'name': args['name'],
-            'deviceType': args['device-type'],
-            'controllerGateway': args['controller-gateway']
-        }
+        # Bulb specific
+        parser.add_argument('intensity')
+        parser.add_argument('colour')
+
+        args = parser.parse_args()
 
         identifier = args['identifier']
 
@@ -86,7 +81,7 @@ class DeviceList(Resource):
             message = 'Identifier already exists'
             code = 409
         else:
-            shelf[identifier] = data
+            shelf[identifier] = args
             message = 'Device registered'
             code = 201
 
