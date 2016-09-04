@@ -14,3 +14,6 @@ instance/
 # Python files
 *.pyo
 env
+
+# App files
+devices.db

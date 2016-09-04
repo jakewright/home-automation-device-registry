@@ -52,33 +52,6 @@ class TestDeviceList(unittest.TestCase):
         # Assert that we get a 409 conflict response code
         self.assertEqual(409, response.status_code)
 
-    def test_get_invalid_device(self):
-        """Test that getting an invalid device's details will return a 404"""
-
-        # This test will have a new database with no device 1 in it
-        response = self.app.get('/device/1')
-
-        # Assert that we get 404 not found
-        self.assertEqual(404, response.status_code)
-
-    def test_get_device(self):
-        """Test that adding and then getting a device works"""
-        self.add_device(
-            'device2',
-            'device 2',
-            'bulb',
-            '192.168.0.2'
-        )
-
-        response = self.app.get('/device/device2')
-        returned_dict = eval(response.data)
-
-        self.assertDictEqual(
-            {'name': 'device 2', 'deviceType': 'bulb', 'controllerGateway': '192.168.0.2'},
-            returned_dict['value']
-        )
-
-
     def add_device(self, identifier, name, device_type, controller_gateway):
         """Helper function to post a new device to the registry and return the response."""
 

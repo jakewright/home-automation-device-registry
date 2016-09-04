@@ -2,6 +2,10 @@
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
 import shelve
+import markdown
+from flask import render_template
+from flask import Markup
+
 
 # Create the application with the instance config option on
 app = Flask(__name__, instance_relative_config=True)
@@ -17,6 +21,20 @@ app.config.from_envvar('APP_CONFIG_FILE')
 api = Api(app)
 
 
+@app.route("/", methods=['GET'])
+def index():
+    """Present some documentation"""
+    # Open the README file
+    with open('/usr/src/app/README.md', 'r') as markdown_file:
+        # Read the markdown contents
+        content = markdown_file.read()
+
+        # Convert the markdown to HTML and then treat it as actual HTML so it's not escaped
+        html = Markup(markdown.markdown(content))
+
+    return render_template('index.html', content=html)
+
+
 class DeviceList(Resource):
     def get(self):
         shelf = shelve.open(app.config['DATABASE'])
@@ -26,10 +44,22 @@ class DeviceList(Resource):
             message = 'No devices'
             code = 204
         else:
-            message = 'Devices found'
+            message = 'Success'
             code = 200
 
-        return {'message': message, 'value': keys}, code
+        devices = []
+
+        for key in keys:
+            device = {
+                'identifier': key,
+                'name': shelf[key]['name'],
+                'deviceType': shelf[key]['deviceType'],
+                'controllerGateway': shelf[key]['controllerGateway']
+            }
+
+            devices.append(device)
+
+        return {'message': message, 'value': devices}, code
 
     def post(self):
         shelf = shelve.open(app.config['DATABASE'])
@@ -43,6 +73,7 @@ class DeviceList(Resource):
         args = parser.parse_args()
 
         data = {
+            'identifier': args['identifier'],
             'name': args['name'],
             'deviceType': args['device-type'],
             'controllerGateway': args['controller-gateway']
@@ -51,7 +82,7 @@ class DeviceList(Resource):
         identifier = args['identifier']
 
         # If the identifier already exists in the database
-        if (identifier in shelf):
+        if identifier in shelf:
             message = 'Identifier already exists'
             code = 409
         else:
@@ -80,6 +111,23 @@ class Device(Resource):
             device = shelf[identifier]
 
         return {'message': message, 'value': device}, code
+
+    def delete(self, identifier: str):
+
+        # Open the database
+        shelf = shelve.open(app.config['DATABASE'])
+
+        # If the key does not exist in the database
+        if not (identifier in shelf):
+            message = 'Device not found'
+            code = 400
+        else:
+            del shelf[identifier]
+            message = 'Device deleted'
+            code = 200
+
+        return {'message': message, 'value': True}, code
+
 
 
 api.add_resource(DeviceList, '/devices')
