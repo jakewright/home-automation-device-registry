@@ -10,10 +10,10 @@ You can run the test suite by typing `make test`.
 
 ## Usage
 All responses will have the form:
-```
-{
-    'message': 'Description of what happened',
-    'value': 'Mixed type holding the content of the response'
+```json
+{     
+    "message": "Description of what happened",
+    "value": "Mixed type holding the content of the response"
 }
 ```
 Subsequent response definitions will only detail the expected value of the `value` field.
@@ -28,19 +28,19 @@ Subsequent response definitions will only detail the expected value of the `valu
 If there are no registered devices, status code 204 will be returned.
 Otherwise 200 and the payload will be a list of dictionary objects.
 
-```
+```json
 [
     {
-        'identifier': 'id1',
-        'name': 'Device 1',
-        'deviceType': 'switch',
-        'controllerGateway': '192.168.99.100:5010'
+        "identifier": "id1",
+        "name": "Device 1",
+        "deviceType": "switch",
+        "controllerGateway": "192.168.99.100:5010"
     },
     {
-        'identifier': 'id2',
-        'name': 'Device 2',
-        'deviceType': 'bulb',
-        'controllerGateway': '192.168.99.100:5011'
+        "identifier": "id2",
+        "name": "Device 2",
+        "deviceType": "bulb",
+        "controllerGateway": "192.168.99.100:5011"
     }
 ]
 ```
@@ -74,12 +74,12 @@ Identifier is the globally unique identifier of the device.
 
 Will return status 404 if the device was not found. Otherwise 200.
 
-```
+```json
 {
-    'identifier': 'id1',
-    'name': 'Device 1',
-    'deviceType': 'switch',
-    'controllerGateway': '192.168.99.100:5010'
+    "identifier": "id1",
+    "name": "Device 1",
+    "deviceType": "switch",
+    "controllerGateway": "192.168.99.100:5010"
 }
 ```
 

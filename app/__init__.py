@@ -30,7 +30,7 @@ def index():
         content = markdown_file.read()
 
         # Convert the markdown to HTML and then treat it as actual HTML so it's not escaped
-        html = Markup(markdown.markdown(content))
+        html = Markup(markdown.markdown(content, extensions=['markdown.extensions.fenced_code']))
 
     return render_template('index.html', content=html)
 
