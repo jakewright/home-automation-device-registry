@@ -5,6 +5,7 @@ import shelve
 import markdown
 from flask import render_template
 from flask import Markup
+import sys
 
 
 # Create the application with the instance config option on
@@ -59,18 +60,10 @@ class DeviceList(Resource):
 
         parser = reqparse.RequestParser()
 
-        # Common to all devices
         parser.add_argument('identifier')
         parser.add_argument('name')
         parser.add_argument('device-type')
         parser.add_argument('controller-gateway')
-
-        # Switch specific
-        parser.add_argument('state')
-
-        # Bulb specific
-        parser.add_argument('intensity')
-        parser.add_argument('colour')
 
         args = parser.parse_args()
 
@@ -84,6 +77,7 @@ class DeviceList(Resource):
             shelf[identifier] = args
             message = 'Device registered'
             code = 201
+            print('Registered device: ' + args['identifier'], file=sys.stderr)
 
         return {'message': message, 'value': identifier}, code
 
@@ -122,7 +116,6 @@ class Device(Resource):
             code = 200
 
         return {'message': message, 'value': True}, code
-
 
 
 api.add_resource(DeviceList, '/devices')
