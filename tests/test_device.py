@@ -2,6 +2,7 @@ import unittest
 import os
 from app import app
 import json
+from tests import add_device
 
 class TestDevice(unittest.TestCase):
 
@@ -32,15 +33,15 @@ class TestDevice(unittest.TestCase):
         test_device = {
             'identifier': 'test',
             'name': 'Test',
-            'deviceType': 'switch',
-            'controllerGateway': 'gateway'
+            'device-type': 'switch',
+            'controller-gateway': 'http://gateway'
         }
 
         # Add the device to the registry
-        self.add_device(test_device['identifier'],
+        add_device(test_device['identifier'],
                         test_device['name'],
-                        test_device['deviceType'],
-                        test_device['controllerGateway'])
+                        test_device['device-type'],
+                        test_device['controller-gateway'])
 
         # Ask the registry for the device's details
         response = self.app.get('/device/test')
@@ -57,7 +58,7 @@ class TestDevice(unittest.TestCase):
         """Test that a device is no longer available after deleting it"""
 
         # Add a device
-        self.add_device('test-del', 'test', 'test', 'test')
+        add_device('test-del', 'test', 'test', 'http://test')
 
         # Try to get the device
         response = self.app.get('/device/test-del')
@@ -71,12 +72,12 @@ class TestDevice(unittest.TestCase):
         response = self.app.get('/device/test-del')
         self.assertEqual(404, response.status_code)
 
-    def add_device(self, identifier, name, device_type, controller_gateway):
-        """Helper function to post a new device to the registry and return the response."""
+    # def add_device(self, identifier, name, device_type, controller_gateway):
+    #     """Helper function to post a new device to the registry and return the response."""
 
-        return self.app.post('/devices', data={
-            'identifier': identifier,
-            'name': name,
-            'device-type': device_type,
-            'controller-gateway': controller_gateway
-        })
+    #     return self.app.post('/devices', data={
+    #         'identifier': identifier,
+    #         'name': name,
+    #         'device-type': device_type,
+    #         'controller-gateway': controller_gateway
+    #     })

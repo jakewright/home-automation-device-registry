@@ -1,11 +1,13 @@
+import markdown
+import requests
+import shelve
+import sys
+
 # Import the framework
 from flask import Flask
-from flask_restful import Resource, Api, reqparse
-import shelve
-import markdown
-from flask import render_template
 from flask import Markup
-import sys
+from flask import render_template
+from flask_restful import Resource, Api, reqparse
 
 
 # Create the application with the instance config option on
@@ -71,15 +73,25 @@ class DeviceList(Resource):
 
         # If the identifier already exists in the database
         if identifier in shelf:
-            message = 'Identifier already exists'
-            code = 409
-        else:
-            shelf[identifier] = args
-            message = 'Device registered'
-            code = 201
-            print('Registered device: ' + args['identifier'], file=sys.stderr)
+            return {'message': 'Identifier already exists', 'value': identifier}, 409
 
-        return {'message': message, 'value': identifier}, code
+        # Test the device
+        response = None
+        try:
+            response = requests.get(args['controller-gateway'] + '/device/' + identifier + '/ping')
+
+            if response.status_code != 200 or response.text != "pong":
+                message = 'Device is invalid, status code ' + response.status_code + 'returned from controller'
+                print(message, file=sys.stderr)
+                return {'message': message, 'value': identifier}, 400
+        except Exception as e:
+            message = 'Device is invalid, exception raised during ping: ' + str(e)
+            print(message, file=sys.stderr)
+            return {'message': message, 'value': identifier}, 400
+
+        shelf[identifier] = args
+        print('Registered device: ' + args['identifier'], file=sys.stderr)
+        return {'message': 'Device registered', 'value': identifier}, 201
 
 
 class Device(Resource):

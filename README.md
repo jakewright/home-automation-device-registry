@@ -11,7 +11,7 @@ You can run the test suite by typing `make test`.
 ## Usage
 All responses will have the form:
 ```json
-{     
+{
     "message": "Description of what happened",
     "value": "Mixed type holding the content of the response"
 }
@@ -49,7 +49,11 @@ Otherwise 200 and the payload will be a list of dictionary objects.
 ### Register a new device
 **Definition**
 
-`POST /devices` 
+`POST /devices`
+
+When registering a new device, this service will test that the device controller is alive by sending a GET request to
+`controller-gateway/device/identifier/ping`. If the controller does not reply with a status code of 200 and a payload of
+"pong" then the device will not be registered.
 
 **Arguments**
 
@@ -60,7 +64,7 @@ Otherwise 200 and the payload will be a list of dictionary objects.
 
 **Response**
 
-If the device identifier already exists, status code 409 will be returned. 
+If the device identifier already exists, status code 409 will be returned.
 Otherwise code 201 and the identifier will be returned as the payload.
 
 ### Lookup device details
