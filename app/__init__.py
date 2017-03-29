@@ -1,5 +1,4 @@
 import markdown
-import requests
 import shelve
 import sys
 
@@ -74,20 +73,6 @@ class DeviceList(Resource):
         # If the identifier already exists in the database
         if identifier in shelf:
             return {'message': 'Identifier already exists', 'value': identifier}, 409
-
-        # Test the device
-        response = None
-        try:
-            response = requests.get(args['controller-gateway'] + '/device/' + identifier + '/ping')
-
-            if response.status_code != 200 or response.text != "pong":
-                message = 'Device is invalid, status code ' + response.status_code + 'returned from controller'
-                print(message, file=sys.stderr)
-                return {'message': message, 'value': identifier}, 400
-        except Exception as e:
-            message = 'Device is invalid, exception raised during ping: ' + str(e)
-            print(message, file=sys.stderr)
-            return {'message': message, 'value': identifier}, 400
 
         shelf[identifier] = args
         print('Registered device: ' + args['identifier'], file=sys.stderr)
