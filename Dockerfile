@@ -8,3 +8,5 @@ COPY . /usr/src/app/
 
 # Set the working directory to where the application files are
 WORKDIR /usr/src/app
+
+CMD python run.py

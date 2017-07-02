@@ -3,6 +3,7 @@ version: '2'
 services:
   python:
     build: .
+    image: home-automation-device-registry
     volumes:
       - .:/usr/src/app
     ports:
@@ -10,4 +11,4 @@ services:
     environment:
       APP_CONFIG_FILE: /usr/src/app/config/development.py
     working_dir: /usr/src/app
-    command: bash -c "python run.py"
+    # command: bash -c "python run.py"

@@ -13,10 +13,10 @@ All responses will have the form:
 ```json
 {
     "message": "Description of what happened",
-    "value": "Mixed type holding the content of the response"
+    "data": "Mixed type holding the content of the response"
 }
 ```
-Subsequent response definitions will only detail the expected value of the `value` field.
+Subsequent response definitions will only detail the expected value of the `data` field.
 
 ### List all devices
 **Definition**

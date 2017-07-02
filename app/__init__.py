@@ -54,7 +54,7 @@ class DeviceList(Resource):
         for key in keys:
             devices.append(shelf[key])
 
-        return {'message': message, 'value': devices}, code
+        return {'message': message, 'data': devices}, code
 
     def post(self):
         shelf = shelve.open(app.config['DATABASE'])
@@ -72,11 +72,11 @@ class DeviceList(Resource):
 
         # If the identifier already exists in the database
         if identifier in shelf:
-            return {'message': 'Identifier already exists', 'value': identifier}, 409
+            return {'message': 'Identifier already exists', 'data': identifier}, 409
 
         shelf[identifier] = args
         print('Registered device: ' + args['identifier'], file=sys.stderr)
-        return {'message': 'Device registered', 'value': identifier}, 201
+        return {'message': 'Device registered', 'data': identifier}, 201
 
 
 class Device(Resource):
@@ -96,7 +96,7 @@ class Device(Resource):
             code = 200
             device = shelf[identifier]
 
-        return {'message': message, 'value': device}, code
+        return {'message': message, 'data': device}, code
 
     def delete(self, identifier: str):
 
@@ -112,7 +112,7 @@ class Device(Resource):
             message = 'Device deleted'
             code = 200
 
-        return {'message': message, 'value': True}, code
+        return {'message': message, 'data': True}, code
 
 
 api.add_resource(DeviceList, '/devices')
