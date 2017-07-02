@@ -51,16 +51,12 @@ Otherwise 200 and the payload will be a list of dictionary objects.
 
 `POST /devices`
 
-When registering a new device, this service will test that the device controller is alive by sending a GET request to
-`controller-gateway/device/identifier/ping`. If the controller does not reply with a status code of 200 and a payload of
-"pong" then the device will not be registered.
-
 **Arguments**
 
 - `"identifier":string` a globally unique identifier for this device
 - `"name":string` a friendly name for the device
-- `"device-type":string` the type of the device as understood by the client
-- `"controller-gateway":string` IP address of the device's controller
+- `"deviceType":string` the type of the device as understood by the client
+- `"controllerGateway":string` IP address of the device's controller
 
 **Response**
 
