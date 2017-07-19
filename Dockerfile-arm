@@ -3,9 +3,6 @@ FROM arm32v6/python:alpine3.6
 # Set the working directory to where the application files are
 WORKDIR /usr/src/app
 
-# Upgrade pip
-RUN pip install --upgrade pip
-
 # Install requirements
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
