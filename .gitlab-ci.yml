@@ -14,7 +14,5 @@ before_script:
 build:
   stage: build
   script:
-    - docker build --pull -t $IMAGE:latest .
-    - docker push $IMAGE:latest
-    - docker build -f Dockerfile-arm --pull -t $IMAGE:arm .
-    - docker push $IMAGE:arm
+    - docker build --pull -t $IMAGE .
+    - docker push $IMAGE
