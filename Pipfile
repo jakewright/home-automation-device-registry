@@ -1,0 +1,10 @@
+[[source]]
+verify_ssl = true
+url = "https://pypi.python.org/simple"
+
+[packages]
+Flask = "==0.11.1"
+Flask-RESTful = "==0.3.5"
+Markdown = "==2.6.6"
+requests = "==2.10.0"
+requests-mock = "==1.0.0"

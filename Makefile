@@ -1,7 +1,8 @@
-.PHONY: start
+build:
+	docker-compose build device-registry
+
 start:
 	docker-compose up
 
-.PHONY: test
 test:
-	docker-compose run --rm python python -m unittest
+	docker-compose run --rm device-registry python -m unittest
