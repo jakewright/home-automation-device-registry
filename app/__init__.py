@@ -27,7 +27,7 @@ api = Api(app)
 def index():
     """Present some documentation"""
     # Open the README file
-    with open('/usr/src/app/README.md', 'r') as markdown_file:
+    with open('./README.md', 'r') as markdown_file:
         # Read the markdown contents
         content = markdown_file.read()
 
