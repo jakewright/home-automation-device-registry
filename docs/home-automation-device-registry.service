@@ -1,0 +1,9 @@
+[Unit]
+Description=Home Automation Device Registry Service
+
+[Service]
+Type=idle
+ExecStart=/home/pi/home-automation/home-automation-device-registry/env/bin/python /home/pi/home-automation/home-automation-device-registry/run.py > /home/pi/home-automation/logs/device-registry.log 2>&1
+
+[Install]
+WantedBy=multi-user.target
