@@ -1,4 +1,5 @@
 import markdown
+import os
 import shelve
 import sys
 
@@ -26,8 +27,9 @@ api = Api(app)
 @app.route("/", methods=['GET'])
 def index():
     """Present some documentation"""
+
     # Open the README file
-    with open('./README.md', 'r') as markdown_file:
+    with open(os.path.dirname(app.root_path) + '/README.md', 'r') as markdown_file:
         # Read the markdown contents
         content = markdown_file.read()
 
