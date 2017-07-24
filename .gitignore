@@ -10,6 +10,7 @@ __pycache__
 
 # User specific files
 instance/
+logs/
 
 # Python files
 *.pyo
