@@ -66,6 +66,7 @@ class DeviceList(Resource):
         parser.add_argument('identifier')
         parser.add_argument('name')
         parser.add_argument('deviceType')
+        parser.add_argument('controllerName')
         parser.add_argument('controllerGateway')
 
         args = parser.parse_args()
