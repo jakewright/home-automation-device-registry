@@ -1,9 +1,3 @@
-# Jetbrains files
-.idea
-
-# OS X files
-.DS_STORE
-
 # Cache files
 __pycache__
 *.pyc
