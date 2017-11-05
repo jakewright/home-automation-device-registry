@@ -1,8 +1,7 @@
 import unittest
 import os
-from app import app
-import json
-from tests import add_device
+from device_registry import app
+from tests import add_device, add_room, decode_response
 
 class TestDevice(unittest.TestCase):
 
@@ -18,30 +17,33 @@ class TestDevice(unittest.TestCase):
         os.unlink(app.config['DATABASE'] + '.db')
 
     def test_get_invalid_device(self):
-        """Test that getting an invalid device's details will return a 404"""
+        """Test that getting an invalid device's details will return a 404."""
 
-        # This test will have a new database with no device 1 in it
         response = self.app.get('/device/1')
-
-        # Assert that we get 404 not found
         self.assertEqual(404, response.status_code)
 
-    def test_list_device(self):
-        """Test that adding and then getting a device works"""
+    def test_get_device(self):
+        """Test that adding and then getting a device works."""
 
-        # Create a list representing a device
-        test_device = {
+        add_room('bedroom', "Jake's Bedroom")
+
+        device = {
             'identifier': 'test',
             'name': 'Test',
-            'device-type': 'switch',
-            'controller-gateway': 'http://gateway'
+            'device_type': 'switch',
+            'controller_name': 'controller-1',
+            'room': {
+                'identifier': 'bedroom',
+                'name': "Jake's Bedroom",
+            },
         }
 
         # Add the device to the registry
-        add_device(test_device['identifier'],
-                        test_device['name'],
-                        test_device['device-type'],
-                        test_device['controller-gateway'])
+        add_device(device['identifier'],
+                        device['name'],
+                        device['device_type'],
+                        device['controller_name'],
+                        device['room']['identifier'])
 
         # Ask the registry for the device's details
         response = self.app.get('/device/test')
@@ -50,15 +52,16 @@ class TestDevice(unittest.TestCase):
         self.assertEqual(200, response.status_code)
 
         # Decode the json
-        decoded_response = json.loads(response.data.decode('utf-8'))
+        decoded_response = decode_response(response)
 
-        self.assertEqual(test_device, decoded_response['value'])
+        self.assertEqual(device, decoded_response)
 
     def test_delete_device(self):
         """Test that a device is no longer available after deleting it"""
 
         # Add a device
-        add_device('test-del', 'test', 'test', 'http://test')
+        add_room('bedroom', "Jake's Bedroom")
+        add_device('test-del', 'name', 'type', 'controller', 'bedroom')
 
         # Try to get the device
         response = self.app.get('/device/test-del')
@@ -72,12 +75,6 @@ class TestDevice(unittest.TestCase):
         response = self.app.get('/device/test-del')
         self.assertEqual(404, response.status_code)
 
-    # def add_device(self, identifier, name, device_type, controller_gateway):
-    #     """Helper function to post a new device to the registry and return the response."""
-
-    #     return self.app.post('/devices', data={
-    #         'identifier': identifier,
-    #         'name': name,
-    #         'device-type': device_type,
-    #         'controller-gateway': controller_gateway
-    #     })
+        # Try to delete the device again
+        response = self.app.delete('/device/test-del')
+        self.assertEqual(404, response.status_code)

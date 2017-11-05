@@ -10,12 +10,14 @@ You can run the test suite by typing `make test`.
 
 ## Usage
 All responses will have the form:
+
 ```json
 {
     "message": "Description of what happened",
     "data": "Mixed type holding the content of the response"
 }
 ```
+
 Subsequent response definitions will only detail the expected value of the `data` field.
 
 ### List all devices
@@ -25,26 +27,32 @@ Subsequent response definitions will only detail the expected value of the `data
 
 **Response**
 
-If there are no registered devices, status code 204 will be returned.
-Otherwise 200 and the payload will be a list of dictionary objects.
+- 200: success
 
 ```json
 [
     {
         "identifier": "id1",
         "name": "Device 1",
-        "deviceType": "switch",
-        "controllerGateway": "192.168.99.100:5010"
+        "device_type": "switch",
+        "controller_name": "controller-1",
+        "room": {
+            "identifier": "bedroom",
+            "name": "Jake's Bedroom"
+        }
     },
     {
         "identifier": "id2",
         "name": "Device 2",
-        "deviceType": "bulb",
-        "controllerGateway": "192.168.99.100:5011"
+        "device_type": "bulb",
+        "controller_name": "controller-2",
+        "room": {
+            "identifier": "kitchen",
+            "name": "Kitchen"
+        }
     }
 ]
 ```
-
 
 ### Register a new device
 **Definition**
@@ -55,31 +63,52 @@ Otherwise 200 and the payload will be a list of dictionary objects.
 
 - `"identifier":string` a globally unique identifier for this device
 - `"name":string` a friendly name for the device
-- `"deviceType":string` the type of the device as understood by the client
-- `"controllerGateway":string` IP address of the device's controller
+- `"device_type":string` the type of the device as understood by the client
+- `"room_identifier":string` the globally unique identifier of the room
+- `"controller_name":string` the name of the device's controller
+
+If the identifier already exists, the existing device will be overwritten.
 
 **Response**
 
-If the device identifier already exists, status code 409 will be returned.
-Otherwise code 201 and the identifier will be returned as the payload.
+- 400: unknown room
+- 201: created successfully
+
+Returns the new device if successful.
+
+```json
+{
+    "identifier": "id1",
+    "name": "Device 1",
+    "device_type": "switch",
+    "controller_name": "controller-2",
+    "room": {
+        "identifier": "bedroom",
+        "name": "Jake's Bedroom"
+    }
+}
+```
 
 ### Lookup device details
 **Definition**
 
 `GET /device/<identifier>`
 
-Identifier is the globally unique identifier of the device.
-
 **Response**
 
-Will return status 404 if the device was not found. Otherwise 200.
+- 404: device not found
+- 200: success
 
 ```json
 {
     "identifier": "id1",
     "name": "Device 1",
-    "deviceType": "switch",
-    "controllerGateway": "192.168.99.100:5010"
+    "device_type": "switch",
+    "controller_name": "controller-1",
+    "room": {
+        "identifier": "bedroom",
+        "name": "Jake's Bedroom"
+    }
 }
 ```
 
@@ -90,4 +119,106 @@ Will return status 404 if the device was not found. Otherwise 200.
 
 **Response**
 
-Will return status 400 if the device was not found. Otherwise 200. The data returned will be `True`.
+- 404: device not found
+- 204: success
+
+### List rooms
+**Definition**
+
+`GET /rooms`
+
+**Response**
+
+- 200: success
+
+```json
+[
+    {
+        "identifier": "bedroom",
+        "name": "Jake's Bedroom",
+        "devices": [
+            {
+                "identifier": "lamp1",
+                "name": "Lamp",
+                "device_type": "bulb",
+                "controller_name": "controller-1"
+            }
+        ]
+    },
+    {
+        "identifier": "kitchen",
+        "name": "Kitchen",
+        "devices": [
+            {
+                "identifier": "tv2",
+                "name": "TV",
+                "device_type": "switch",
+                "controller_name": "controller-2"
+            }
+        ]
+    }
+]
+
+```
+
+### Register new room
+**Definition**
+
+`POST /rooms`
+
+**Arguments**
+
+- `"identifier":string` a globally unique identifier for the room
+- `"name":string` a friendly name for the room
+
+If the identifier already exists, the existing room will be overwritten.
+Devices belonging to an existing room will not be modified.
+
+**Response**
+
+- 201: created successfully
+
+Returns the new room is created successfully.
+
+```json
+{
+    "identifier": "bedroom",
+    "name": "Jake's Bedroom",
+    "devices": []
+}
+```
+
+### Lookup room details
+**Definition**
+`GET /room/<identifier>`
+
+**Response**
+
+- 404: room not found
+- 200: success
+
+```json
+{
+    "identifier": "bedroom",
+    "name": "Jake's Bedroom",
+    "devices": [
+        {
+            "identifier": "id1",
+            "name": "Device 1",
+            "device_type": "switch",
+            "controller_name": "controller-1"
+        }
+    ]
+}
+```
+
+### Delete a room
+**Definition**
+
+`DELETE /rooms/<identifier>`
+
+**Response**
+
+- 404: room not found
+- 204: success
+
