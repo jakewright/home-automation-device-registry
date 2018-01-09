@@ -124,7 +124,7 @@ class Device(Resource):
 
         device_repo.delete(identifier)
 
-        return {'message': 'Device deleted', 'data': True}, 200
+        return '', 204
 
 class RoomList(Resource):
     def get(self):
@@ -186,7 +186,7 @@ class Room(Resource):
 
         room_repo.delete(identifier)
 
-        return {'message': 'Room deleted', 'data': True}, 200
+        return '', 204
 
 api.add_resource(DeviceList, '/devices')
 api.add_resource(Device, '/device/<string:identifier>')
